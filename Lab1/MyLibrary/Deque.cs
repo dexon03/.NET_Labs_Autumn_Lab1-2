@@ -2,7 +2,7 @@ using System.Text;
 
 namespace MyLibrary;
 
-public class Deque<T>
+public class Deque<T> where T : IComparable
 {
     private Node<T>? _head;
     private Node<T>? _tail;
@@ -12,7 +12,14 @@ public class Deque<T>
     public event EventHandler? OnPopFront;
     public event EventHandler? OnPopBack;
     public event EventHandler? OnClear;
+    public event EventHandler? OnReverse;
     
+    
+    public Deque()
+    {
+        _head = null;
+        _tail = null;
+    }
 
     public Deque(T item)
     {
@@ -160,5 +167,6 @@ public class Deque<T>
             node = temp;
         }
         (_head, _tail) = (_tail, _head);
+        OnReverse?.Invoke(this, EventArgs.Empty);
     }
 }
