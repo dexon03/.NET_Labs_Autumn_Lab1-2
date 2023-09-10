@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 
 namespace MyLibrary;
 
@@ -6,6 +6,13 @@ public class Deque<T>
 {
     private Node<T>? _head;
     private Node<T>? _tail;
+    
+    public event EventHandler? OnPushFront;
+    public event EventHandler? OnPushBack;
+    public event EventHandler? OnPopFront;
+    public event EventHandler? OnPopBack;
+    public event EventHandler? OnClear;
+    
 
     public Deque(T item)
     {
@@ -27,6 +34,7 @@ public class Deque<T>
             _head.Previous = node;
             _head = node;
         }
+        OnPushFront?.Invoke(this, EventArgs.Empty);
     }
     
     public T PopFront()
@@ -45,6 +53,8 @@ public class Deque<T>
         {
             _tail = null;
         }
+        
+        OnPopFront?.Invoke(this, EventArgs.Empty);
         return item;
     }
 
@@ -72,6 +82,7 @@ public class Deque<T>
             _tail.Next = node;
             _tail = node;
         }
+        OnPushBack?.Invoke(this, EventArgs.Empty);
     }
     
     public T PopBack()
@@ -90,6 +101,7 @@ public class Deque<T>
         {
             _head = null;
         }
+        OnPopBack?.Invoke(this, EventArgs.Empty);
         return item;
     }
     
@@ -112,6 +124,7 @@ public class Deque<T>
     {
         _head = null;
         _tail = null;
+        OnClear?.Invoke(this, EventArgs.Empty);
     }
     
     public override string ToString()
