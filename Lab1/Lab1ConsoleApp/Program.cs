@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using MyLibrary;
+﻿using MyLibrary;
 
 var deque = new Deque<int>();
 
@@ -20,12 +19,21 @@ deque.PushFront(0);
 
 Console.WriteLine(deque.ToString());
 Console.WriteLine("----------------------------------------------------------");
+Console.WriteLine("Test Enumerator");
+foreach (var item in deque)
+{
+    Console.WriteLine(item);
+}
+Console.WriteLine("----------------------------------------------------------");
 Console.WriteLine("Test Reverse");
 
 deque.OnReverse += (sender, args) => Console.WriteLine("Reverse");
 deque.Reverse();
 
 Console.WriteLine(deque.ToString());
+Console.WriteLine("----------------------------------------------------------");
+Console.WriteLine("Test Count");
+Console.WriteLine(deque.Count());
 Console.WriteLine("----------------------------------------------------------");
 Console.WriteLine("Test PopFront and PopBack");
 
@@ -57,3 +65,12 @@ catch (InvalidOperationException e)
 
 Console.WriteLine(deque.ToString());
 Console.WriteLine("Test is empty: " + deque.IsEmpty());
+
+Console.WriteLine("----------------------------------------------------------");
+Console.WriteLine("Test Enumerator on empty created deque");
+
+var deque1 = new Deque<int>();
+foreach (var item in deque1)
+{
+    Console.WriteLine(item);
+}

@@ -1,8 +1,9 @@
+using System.Collections;
 using System.Text;
 
 namespace MyLibrary;
 
-public class Deque<T> where T : IComparable
+public class Deque<T> : IEnumerable<T>
 {
     private Node<T>? _head;
     private Node<T>? _tail;
@@ -13,7 +14,6 @@ public class Deque<T> where T : IComparable
     public event EventHandler? OnPopBack;
     public event EventHandler? OnClear;
     public event EventHandler? OnReverse;
-    
     
     public Deque()
     {
@@ -134,22 +134,18 @@ public class Deque<T> where T : IComparable
         OnClear?.Invoke(this, EventArgs.Empty);
     }
     
-    public override string ToString()
+    public bool Contains(T item)
     {
-        var sb = new StringBuilder();
-        sb.Append("[");
         var node = _head;
         while (node != null)
         {
-            sb.Append(node.Data);
-            node = node.Next;
-            if (node != null)
+            if (node.Data != null && node.Data.Equals(item))
             {
-                sb.Append(", ");
+                return true;
             }
+            node = node.Next;
         }
-        sb.Append("]");
-        return sb.ToString();
+        return false;
     }
     
     public void Reverse()
@@ -169,4 +165,80 @@ public class Deque<T> where T : IComparable
         (_head, _tail) = (_tail, _head);
         OnReverse?.Invoke(this, EventArgs.Empty);
     }
+    
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        sb.Append("[");
+        var node = _head;
+        while (node != null)
+        {
+            sb.Append(node.Data);
+            node = node.Next;
+            if (node != null)
+            {
+                sb.Append(", ");
+            }
+        }
+        sb.Append("]");
+        return sb.ToString();
+    }
+    
+    public IEnumerator<T> GetEnumerator()
+    {
+        return new DequeEnumerator<T>(_head);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }
+
+
+public class DequeEnumerator<T> : IEnumerator<T>
+{
+    private readonly Node<T>? _head;
+    private Node<T>? _current = null;
+    private bool isStarted = false;
+
+    public DequeEnumerator(Node<T> head)
+    {
+        _head = head;
+    }
+    
+    public bool MoveNext()
+    {
+        if (!isStarted && _head != null)
+        {
+            _current = _head;
+            isStarted = true;
+            return HasNext();
+        }
+        if (_current != null && HasNext())
+        {
+            _current = _current.Next;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    private bool HasNext()
+    {
+        return _current.Next != null;
+    }
+
+    public void Reset()
+    {
+        _current = _head;
+    }
+
+    public T Current => _current.Data ;
+
+    object IEnumerator.Current =>  _current.Data;
+    
+    public void Dispose()
+    {
+    }
+} 
