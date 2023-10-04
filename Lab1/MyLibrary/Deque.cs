@@ -231,10 +231,18 @@ public class DequeEnumerator<T> : IEnumerator<T>
 
     public void Reset()
     {
-        _current = _head;
+        _current = null;
+        isStarted = false;
     }
 
-    public T Current => _current.Data ;
+    public T Current
+    {
+        get
+        {
+            if (_current != null) return _current.Data;
+            throw new InvalidOperationException("Enumerator is not started");
+        }
+    }
 
     object IEnumerator.Current =>  _current.Data;
     
