@@ -45,10 +45,14 @@ public class DequeTests
 
         // Act
         var popped = deque.PopFront();
-
+        
         // Assert
+        var expectedDeque = new Deque<int>();
+        expectedDeque.PushBack(2);
+        expectedDeque.PushBack(3);
         Assert.Equal(1, popped);
         Assert.Equal("[2, 3]", deque.ToString());
+        Assert.Equal(expectedDeque,deque);
     }
 
     [Fact]
@@ -254,5 +258,35 @@ public class DequeTests
         // Act & Assert
         var enumerator = deque.GetEnumerator();
         Assert.Throws<InvalidOperationException>(() => enumerator.Current);
+    }
+    
+    [Fact]
+    public void TestCurrentFromEnumeratorWithoutMoveNext()
+    {
+        // Arrange
+        var deque = new Deque<int>(1); 
+
+        // Act
+        var enumerator = deque.GetEnumerator();
+
+        // Assert
+        Assert.Throws<InvalidOperationException>(() => enumerator.Current);
+    }
+    
+    [Fact]
+    public void TestCurrentFromEnumeratorAfterMoveNext()
+    {
+        // Arrange
+        var deque = new Deque<int>();
+        deque.PushBack(2);
+        deque.PushBack(3);
+
+        // Act
+        var enumerator = deque.GetEnumerator();
+        enumerator.MoveNext();
+        var current = enumerator.Current;
+
+        // Assert
+        Assert.Equal(2, current);
     }
 }
